@@ -1,5 +1,4 @@
 #include <iostream>
-#include <stdio.h>
 #include <cstring>
 
 using namespace std;
@@ -114,7 +113,7 @@ int main(int argc, char const *argv[]) {
         }
     }
 
-    printf("%d", result);
+    cout << result;
 
     return 0;
 }
