@@ -3,11 +3,6 @@
 
 using namespace std;
 
-void error() {
-    cout << "error";
-    exit(1);
-}
-
 char get_char(char const *argv, unsigned int &i) {
 
     if (i == strlen(argv)) {
@@ -19,7 +14,7 @@ char get_char(char const *argv, unsigned int &i) {
     return c;
 }
 
-int get_num(char const *argv, unsigned int &i) {
+int get_num(char const *argv, unsigned int &i, char &error) {
 
     char c;
     int result = 0, sign = 1;
@@ -32,7 +27,8 @@ int get_num(char const *argv, unsigned int &i) {
     }
 
     if ((c < '0') || (c > '9')) {
-        error();
+        error = 1;
+        return result;
     }
 
     while ((c >= '0') && (c <= '9')) {
@@ -47,12 +43,12 @@ int get_num(char const *argv, unsigned int &i) {
     return result * sign;
 }
 
-int make_summand(char const *argv, unsigned int &i) {
+int make_summand(char const *argv, unsigned int &i, char &error) {
 
-    int result = get_num(argv, i);
+    int result = get_num(argv, i, error);
     char c;
 
-    while (1) {
+    while (!error) {
 
         c = get_char(argv, i);
 
@@ -66,17 +62,49 @@ int make_summand(char const *argv, unsigned int &i) {
         }
 
         if ((c != '*') && (c != '/')) {
-            error();
+            error = 1;
+            return result;
         }
 
         if (c == '*') {
-            result *= get_num(argv, i);
+            result *= get_num(argv, i, error);
         } else {
-            int k = get_num(argv, i);
+            int k = get_num(argv, i, error);
             if (k == 0) {
-                error();
+                error = 1;
+                return result;
             }
             result /= k;
+        }
+    }
+
+    return result;
+}
+
+int calculator(char const *argv, char &error) {
+
+    unsigned int i = 0;
+
+    int result = make_summand(argv, i, error);
+    char c;
+
+    while (!error) {
+
+        c = get_char(argv, i);
+
+        if (c == '\n') {
+            break;
+        }
+
+        if ((c != '+') && (c != '-')) {
+            error = 1;
+            return result;
+        }
+
+        if (c == '+') {
+            result += make_summand(argv, i, error);
+        } else {
+            result -= make_summand(argv, i, error);
         }
     }
 
@@ -86,31 +114,17 @@ int make_summand(char const *argv, unsigned int &i) {
 int main(int argc, char const *argv[]) {
     
     if (argc != 2) {
-        error();
+        cout << "error";
+        return 1;
     }
 
-    unsigned int i = 0;
+    char error = 0;
 
-    int result = make_summand(argv[1], i);
-    char c;
+    int result = calculator(argv[1], error);
 
-    while (1) {
-
-        c = get_char(argv[1], i);
-
-        if (c == '\n') {
-            break;
-        }
-
-        if ((c != '+') && (c != '-')) {
-            error();
-        }
-
-        if (c == '+') {
-            result += make_summand(argv[1], i);
-        } else {
-            result -= make_summand(argv[1], i);
-        }
+    if (error) {
+        cout << "error";
+        return 1;
     }
 
     cout << result;
