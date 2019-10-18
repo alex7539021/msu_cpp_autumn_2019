@@ -1,11 +1,12 @@
 #include <iostream>
 #include <cstring>
+#include <string>
 
 using namespace std;
 
-char get_char(char const *argv, unsigned int &i) {
+char get_char(string argv, unsigned int &i) {
 
-    if (i == strlen(argv)) {
+    if (i == argv.size()) {
         return '\n';
     }
 
@@ -14,7 +15,7 @@ char get_char(char const *argv, unsigned int &i) {
     return c;
 }
 
-int get_num(char const *argv, unsigned int &i, char &error) {
+int get_num(string argv, unsigned int &i, char &error) {
 
     char c;
     int result = 0, sign = 1;
@@ -43,7 +44,7 @@ int get_num(char const *argv, unsigned int &i, char &error) {
     return result * sign;
 }
 
-int make_summand(char const *argv, unsigned int &i, char &error) {
+int make_summand(string argv, unsigned int &i, char &error) {
 
     int result = get_num(argv, i, error);
     char c;
@@ -81,7 +82,7 @@ int make_summand(char const *argv, unsigned int &i, char &error) {
     return result;
 }
 
-int calculator(char const *argv, char &error) {
+int calculator(string argv, char &error) {
 
     unsigned int i = 0;
 
@@ -120,7 +121,9 @@ int main(int argc, char const *argv[]) {
 
     char error = 0;
 
-    int result = calculator(argv[1], error);
+    string str(argv[1]);
+
+    int result = calculator(str, error);
 
     if (error) {
         cout << "error";
