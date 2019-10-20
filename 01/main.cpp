@@ -4,7 +4,7 @@
 
 using namespace std;
 
-char get_char(string argv, unsigned int &i) {
+char get_char(string &argv, unsigned int &i) {
 
     if (i == argv.size()) {
         return '\n';
@@ -15,7 +15,7 @@ char get_char(string argv, unsigned int &i) {
     return c;
 }
 
-int get_num(string argv, unsigned int &i, char &error) {
+int get_num(string &argv, unsigned int &i, char &error) {
 
     char c;
     int result = 0, sign = 1;
@@ -44,7 +44,7 @@ int get_num(string argv, unsigned int &i, char &error) {
     return result * sign;
 }
 
-int make_summand(string argv, unsigned int &i, char &error) {
+int make_summand(string &argv, unsigned int &i, char &error) {
 
     int result = get_num(argv, i, error);
     char c;
@@ -82,7 +82,7 @@ int make_summand(string argv, unsigned int &i, char &error) {
     return result;
 }
 
-int calculator(string argv, char &error) {
+int calculator(string &argv, char &error) {
 
     unsigned int i = 0;
 
