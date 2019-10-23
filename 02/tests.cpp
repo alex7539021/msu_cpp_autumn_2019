@@ -69,7 +69,6 @@ void test(int num) {
 
     default:
         return;
-        
     }
 }
 
