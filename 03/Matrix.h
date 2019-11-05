@@ -32,8 +32,8 @@ public:
 
     Matrix &operator*=(int mul);
 
-    char operator==(const Matrix& M) const;
-    char operator!=(const Matrix& M) const;
+    bool operator==(const Matrix& M) const;
+    bool operator!=(const Matrix& M) const;
 
     ~Matrix();
 };

@@ -45,23 +45,23 @@ Matrix &Matrix::operator*=(int mul) {
     return *this;
 }
 
-char Matrix::operator==(const Matrix &M) const {
+bool Matrix::operator==(const Matrix &M) const {
     if ((columns != M.getColumns()) || (rows != M.getRows())) {
-        return 0;
+        return false;
     }
     for (int i = 0; i < columns * rows; ++i) {
         if (ptr[i] != M.ptr[i]) {
-            return 0;
+            return false;
         }
     }
-    return 1;
+    return true;
 }
 
-char Matrix::operator!=(const Matrix &M) const {
+bool Matrix::operator!=(const Matrix &M) const {
     if (*this == M) {
-        return 0;
+        return false;
     }
-    return 1;
+    return true;
 }
 
 
