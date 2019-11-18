@@ -31,9 +31,9 @@ public:
 private:
     template<class T, class... Args>
     Error process(T &&value, Args &&...args) {
-        bool bVal = write(value) == Error::NoError;
-        bool bVal1 = process(std::forward<Args>(args)...) == Error::NoError;
-        return (bVal && bVal1) ? Error::NoError : Error::CorruptedArchive;
+        if (write(value) == Error::NoError)
+            return process(std::forward<Args>(args)...);
+        return Error::CorruptedArchive;
     }
 
     Error write(uint64_t value) {
@@ -48,7 +48,7 @@ private:
     }
 
     template<class T>
-    Error write(T value) {
+    Error write(T& value) {
         return Error::CorruptedArchive;
     }
 
@@ -69,7 +69,7 @@ public:
     explicit Deserializer(std::istream& in): in_(in) {}
 
     template<class T>
-    Error load(T &object) {
+    Error load(T& object) {
         return object.serialize(*this);
     }
 
@@ -82,9 +82,10 @@ private:
 
     template<class T, class... Args>
     Error process(T &&value, Args &&...args) {
-        bool bVal = read(value) == Error::NoError;
-        bool bVal1 = process(std::forward<Args>(args)...) == Error::NoError;
-        return (bVal && bVal1) ? Error::NoError : Error::CorruptedArchive;
+        if (read(value) == Error::NoError) {
+            return process(std::forward<Args>(args)...);
+        }
+        return Error::CorruptedArchive;
     }
 
     Error process() {
@@ -107,17 +108,19 @@ private:
         bool err = false;
         std::string str;
         in_ >> str;
-        err = str[0] == '-';
+        if (str[0] == '-') {
+            return Error::CorruptedArchive;
+        }
         try {
             value = std::stoull(str);
-        } catch(...) {
-            err = true;
+        } catch(std::exception&) {
+            return Error::CorruptedArchive;
         }
-        return err ? Error::CorruptedArchive : Error::NoError;
+        return Error::NoError;
     }
 
     template<class T>
-    Error read(T value) {
+    Error read(T& value) {
         return Error::CorruptedArchive;
     }
 
