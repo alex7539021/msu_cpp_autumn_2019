@@ -21,14 +21,14 @@ std::string format(const std::string& s, ArgsT&&... args) {
     std::vector<std::string> arg{to_string(std::forward<ArgsT>(args))...};
     std::ostringstream result;
 
-    int count = 0;
+    unsigned int count = 0;
     while (count < s.length()) {
         if (s[count] == '{') {
             count++;
             if (s[count] == '}') {
                 throw std::runtime_error("");
             }
-            int num = 0;
+            unsigned int num = 0;
             while (s[count] != '}' && count < s.length()) {
                 if (s[count] >= '0' && s[count] <= '9') {
                     num = num * 10 + (s[count] - '0');
